@@ -1,0 +1,8 @@
+FROM postman/newman
+
+
+COPY ./RealWearDeviceManagementService_IntegrationTest23.postman_collection /etc/newman
+
+WORKDIR /etc/newman
+
+

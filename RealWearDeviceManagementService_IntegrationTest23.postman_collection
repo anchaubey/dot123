@@ -1,0 +1,2141 @@
+{
+	"info": {
+		"_postman_id": "5858afd3-6b8b-4342-a8d2-48bf184817be",
+		"name": "RealWearDeviceManagementService_Environment",
+		"description": "The scope of this microservice is to handle how\r\n1)  Superadmin users will get all devices information across all workspaces\r\n2)  Admin users will add/update/remove/get devices information from a workspace\r\n3)  Operater users will get devices information from a workspace",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Setup_GetAntiForgeryToken",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status Code 200\", function () \r",
+							"{\r",
+							"    pm.response.to.have.status(200);\r",
+							"    postman.setEnvironmentVariable(\"AntiForgeryKey\",postman.getResponseCookie(\"AntiForgery\").value);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://foresightdev.realwear.com/account/login",
+					"protocol": "https",
+					"host": [
+						"foresightdev",
+						"realwear",
+						"com"
+					],
+					"path": [
+						"account",
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Setup_GetToken_AllUsers",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status Code 302\", function () \r",
+							"{\r",
+							"     var loc = pm.response.headers.get('Location');\r",
+							"     postman.setEnvironmentVariable(\"ApiToken\",loc.replace(\"/account/token?accessToken=\",\"\"));\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"followRedirects": false
+			},
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "__RequestVerificationToken",
+							"value": "{{AntiForgeryKey}}",
+							"type": "text"
+						},
+						{
+							"key": "workspace",
+							"value": "{{Workspace}}",
+							"type": "text"
+						},
+						{
+							"key": "emailAddress",
+							"value": "tedt@dwmskl.com",
+							"type": "text"
+						},
+						{
+							"key": "role",
+							"value": "admin",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "https://foresightdev.realwear.com/account/token",
+					"protocol": "https",
+					"host": [
+						"foresightdev",
+						"realwear",
+						"com"
+					],
+					"path": [
+						"account",
+						"token"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Setup_GetToken_SuperAdmin",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status Code 302\", function () \r",
+							"{\r",
+							"     var loc = pm.response.headers.get('Location');\r",
+							"     postman.setEnvironmentVariable(\"ApiTokenSuperAdmin\",loc.replace(\"/account/token?accessToken=\",\"\"));\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"followRedirects": false
+			},
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "__RequestVerificationToken",
+							"value": "{{AntiForgeryKey}}",
+							"type": "text"
+						},
+						{
+							"key": "workspace",
+							"value": "{{Workspace}}",
+							"type": "text"
+						},
+						{
+							"key": "emailAddress",
+							"value": "tedt@dwmskl.com",
+							"type": "text"
+						},
+						{
+							"key": "role",
+							"value": "superadmin",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "https://foresightdev.realwear.com/account/token",
+					"protocol": "https",
+					"host": [
+						"foresightdev",
+						"realwear",
+						"com"
+					],
+					"path": [
+						"account",
+						"token"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "CreateDevices_MinimumOneDeviceLimit_Validation",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Should contain at least 1 device\", function () {\r",
+							"pm.response.to.have.status(400);\r",
+							"pm.expect(responseBody == \"Request should contain at least one device registration\").is.true;\r",
+							"});\r",
+							"\r",
+							"\r",
+							"\r",
+							"\r",
+							"\r",
+							"\r",
+							"\r",
+							"\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{ApiToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"devices\": [\r\n    \r\n  ]\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{Url}}/api/devices",
+					"host": [
+						"{{Url}}"
+					],
+					"path": [
+						"api",
+						"devices"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "CreateDevices_SerialNumber_Required_Validation",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Serial Number Required Validation\", function () {\r",
+							"    pm.response.to.have.status(400);\r",
+							"    pm.response.to.be.error;\r",
+							"\r",
+							"    obj = JSON.parse(responseBody);\r",
+							"    Object.keys(obj).forEach(key => {\r",
+							" \r",
+							"    if (typeof obj[key] === 'object') {\r",
+							"           var childObj=obj[key];\r",
+							" \r",
+							"            Object.keys(childObj).forEach(keys => {\r",
+							" \r",
+							"            if(\"Devices[0].SerialNumber\" == keys )\r",
+							"            {\r",
+							"               pm.expect(childObj[keys] == \"Serial Number is required\").is.true;\r",
+							"            }\r",
+							"\r",
+							"            })\r",
+							"         }\r",
+							"    })\r",
+							"});\r",
+							"\r",
+							"\r",
+							"\r",
+							"\r",
+							"\r",
+							"\r",
+							"\r",
+							"\r",
+							"\r",
+							"\r",
+							"\r",
+							"\r",
+							"\r",
+							"\r",
+							"\r",
+							"\r",
+							"\r",
+							"\r",
+							"\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{ApiToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "x-realwear-workspace",
+						"type": "text",
+						"value": "{{Workspace}}"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"devices\": [\r\n    {\r\n      \"name\": \"\",\r\n      \"email\": null,\r\n      \"description\": \"\",\r\n      \"serialNumber\": null\r\n    }\r\n  ]\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{Url}}/api/devices",
+					"host": [
+						"{{Url}}"
+					],
+					"path": [
+						"api",
+						"devices"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "CreateDevices_SerialNumber_Regex_Validation",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Serial Number Regex Validation\", function () {\r",
+							"    pm.response.to.have.status(400);\r",
+							"    pm.response.to.be.error;\r",
+							"\r",
+							"    obj = JSON.parse(responseBody);\r",
+							"    Object.keys(obj).forEach(key => {\r",
+							" \r",
+							"    if (typeof obj[key] === 'object') {\r",
+							"           var childObj=obj[key];\r",
+							" \r",
+							"            Object.keys(childObj).forEach(keys => {\r",
+							" \r",
+							"            if(\"Devices[0].SerialNumber\" == keys )\r",
+							"            {\r",
+							"               pm.expect(childObj[keys] == \"Invalid Serial Number\").is.true;\r",
+							"            }\r",
+							"\r",
+							"            })\r",
+							"         }\r",
+							"    })\r",
+							"});\r",
+							"\r",
+							"\r",
+							"\r",
+							"\r",
+							"\r",
+							"\r",
+							"\r",
+							"\r",
+							"\r",
+							"\r",
+							"\r",
+							"\r",
+							"\r",
+							"\r",
+							"\r",
+							"\r",
+							"\r",
+							"\r",
+							"\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{ApiToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "x-realwear-workspace",
+						"type": "text",
+						"value": "{{Workspace}}"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"devices\": [\r\n    {\r\n      \"name\": \"\",\r\n      \"email\": null,\r\n      \"description\": \"\",\r\n      \"serialNumber\": \"test@#123\"\r\n    }\r\n  ]\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{Url}}/api/devices",
+					"host": [
+						"{{Url}}"
+					],
+					"path": [
+						"api",
+						"devices"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "CreateDevices_Invalid _Email_Validation",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Invalid Email Address\", function () {\r",
+							"    pm.response.to.have.status(400);\r",
+							"    pm.response.to.be.error;\r",
+							"\r",
+							"    obj = JSON.parse(responseBody);\r",
+							"    Object.keys(obj).forEach(key => {\r",
+							" \r",
+							"    if (typeof obj[key] === 'object') {\r",
+							"           var childObj=obj[key];\r",
+							" \r",
+							"            Object.keys(childObj).forEach(keys => {\r",
+							" \r",
+							"            if(\"Devices[0].Email\" == keys )\r",
+							"            {\r",
+							"               pm.expect(childObj[keys] == \"Invalid Email Address\").is.true;\r",
+							"            }\r",
+							"\r",
+							"            })\r",
+							"         }\r",
+							"    })\r",
+							"});\r",
+							"\r",
+							"\r",
+							"\r",
+							"\r",
+							"\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{ApiToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "x-realwear-workspace",
+						"type": "text",
+						"value": "{{Workspace}}"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"devices\": [\r\n    {\r\n      \"name\": \"\",\r\n      \"email\": \"sasasasa\",\r\n      \"description\": \"\",\r\n       \"serialNumber\": \"{{SerialNumber}}\"\r\n    }\r\n  ]\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{Url}}/api/devices",
+					"host": [
+						"{{Url}}"
+					],
+					"path": [
+						"api",
+						"devices"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "CreateDevices_Name_Length_Validation",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Name cannot be more than 40 characters\", function () {\r",
+							"    pm.response.to.have.status(400);\r",
+							"    pm.response.to.be.error;\r",
+							"\r",
+							"    obj = JSON.parse(responseBody);\r",
+							"    Object.keys(obj).forEach(key => {\r",
+							" \r",
+							"    if (typeof obj[key] === 'object') {\r",
+							"           var childObj=obj[key];\r",
+							" \r",
+							"            Object.keys(childObj).forEach(keys => {\r",
+							"             if(\"Devices[0].Name\" == keys )\r",
+							"            {\r",
+							"               pm.expect(childObj[keys] == \"Name cannot be more than 40 characters\").is.true;\r",
+							"            }\r",
+							"\r",
+							"            })\r",
+							"         }\r",
+							"    })\r",
+							"});\r",
+							"\r",
+							"\r",
+							"\r",
+							"\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{ApiToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "x-realwear-workspace",
+						"type": "text",
+						"value": "{{Workspace}}"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"devices\": [\r\n    {\r\n      \"name\": \"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\r\n      \"email\": null,\r\n      \"description\": null,\r\n      \"serialNumber\": \"{{SerialNumber}}\"\r\n    }\r\n  ]\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{Url}}/api/devices",
+					"host": [
+						"{{Url}}"
+					],
+					"path": [
+						"api",
+						"devices"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "CreateDevices_Description_Length_Validation",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Description Max Length Validation\", function () {\r",
+							"    pm.response.to.have.status(400);\r",
+							"    pm.response.to.be.error;\r",
+							"\r",
+							"    obj = JSON.parse(responseBody);\r",
+							"    Object.keys(obj).forEach(key => {\r",
+							" \r",
+							"    if (typeof obj[key] === 'object') {\r",
+							"           var childObj=obj[key];\r",
+							" \r",
+							"            Object.keys(childObj).forEach(keys => {\r",
+							"             if(\"Devices[0].Description\" == keys )\r",
+							"            {\r",
+							"               pm.expect(childObj[keys] == \"Description cannot be more than 250 characters\").is.true;\r",
+							"            }\r",
+							"\r",
+							"            })\r",
+							"         }\r",
+							"    })\r",
+							"});\r",
+							"\r",
+							"\r",
+							"\r",
+							"\r",
+							"\r",
+							"\r",
+							"\r",
+							"\r",
+							"\r",
+							"\r",
+							"\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{ApiToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "x-realwear-workspace",
+						"type": "text",
+						"value": "{{Workspace}}"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"devices\": [\r\n    {\r\n      \"name\": \"name\",\r\n      \"email\": null,\r\n      \"description\": \"jdsssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssjdsssssssssssssssssssssssssssssssssssssssssssssssgddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddsssssssssssssssssssssssssssssssssssssssssssssssssssssss\",\r\n      \"serialNumber\": \"{{SerialNumber}}\"\r\n    }\r\n  ]\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{Url}}/api/devices",
+					"host": [
+						"{{Url}}"
+					],
+					"path": [
+						"api",
+						"devices"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "CreateDevices_MaxDevice_Validation",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Invalid Model\", function () {\r",
+							"pm.response.to.have.status(400);\r",
+							"pm.expect(responseBody == \"Request should not contain more than 100 devices\").is.true;\r",
+							"});\r",
+							"\r",
+							"\r",
+							"\r",
+							"\r",
+							"\r",
+							"\r",
+							"\r",
+							"\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{ApiToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "x-realwear-workspace",
+						"type": "text",
+						"value": "{{Workspace}}"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"devices\": [\r\n    {\r\n      \"name\": \"\",\r\n      \"email\": \"abc@gmail.com\",\r\n      \"description\": \"\",\r\n      \"serialNumber\": \"AXSAA2\"\r\n    },\r\n    {\r\n      \"name\": \"\",\r\n      \"email\": \"abc@gmail.com\",\r\n      \"description\": \"\",\r\n      \"serialNumber\": \"AXSAA2\"\r\n    },\r\n    {\r\n      \"name\": \"\",\r\n      \"email\": \"abc@gmail.com\",\r\n      \"description\": \"\",\r\n      \"serialNumber\": \"AXSAA3\"\r\n    },\r\n    {\r\n      \"name\": \"\",\r\n      \"email\": \"abc@gmail.com\",\r\n      \"description\": \"\",\r\n      \"serialNumber\": \"AXSAA4\"\r\n    },\r\n\t{\r\n      \"name\": \"\",\r\n      \"email\": \"abc@gmail.com\",\r\n      \"description\": \"\",\r\n      \"serialNumber\": \"AXSAA5\"\r\n    },\r\n    {\r\n      \"name\": \"\",\r\n      \"email\": \"abc@gmail.com\",\r\n      \"description\": \"\",\r\n      \"serialNumber\": \"AXSAA6\"\r\n    },\r\n    {\r\n      \"name\": \"\",\r\n      \"email\": \"abc@gmail.com\",\r\n      \"description\": \"\",\r\n      \"serialNumber\": \"AXSAA7\"\r\n    },\r\n    {\r\n      \"name\": \"\",\r\n      \"email\": \"abc@gmail.com\",\r\n      \"description\": \"\",\r\n      \"serialNumber\": \"AXSAA8\"\r\n    }\r\n\t,\r\n    {\r\n      \"name\": \"\",\r\n      \"email\": \"abc@gmail.com\",\r\n      \"description\": \"\",\r\n      \"serialNumber\": \"AXSAA9\"\r\n    },\r\n    {\r\n      \"name\": \"\",\r\n      \"email\": \"abc@gmail.com\",\r\n      \"description\": \"\",\r\n      \"serialNumber\": \"AXSAA20\"\r\n    },\r\n\t{\r\n      \"name\": \"\",\r\n      \"email\": \"abc@gmail.com\",\r\n      \"description\": \"\",\r\n      \"serialNumber\": \"AXSAA21\"\r\n    },\r\n    {\r\n      \"name\": \"\",\r\n      \"email\": \"abc@gmail.com\",\r\n      \"description\": \"\",\r\n      \"serialNumber\": \"AXSAA22\"\r\n    },\r\n    {\r\n      \"name\": \"\",\r\n      \"email\": \"abc@gmail.com\",\r\n      \"description\": \"\",\r\n      \"serialNumber\": \"AXSAA23\"\r\n    },\r\n    {\r\n      \"name\": \"\",\r\n      \"email\": \"abc@gmail.com\",\r\n      \"description\": \"\",\r\n      \"serialNumber\": \"AXSAA24\"\r\n    },\r\n\t{\r\n      \"name\": \"\",\r\n      \"email\": \"abc@gmail.com\",\r\n      \"description\": \"\",\r\n      \"serialNumber\": \"AXSAA25\"\r\n    },\r\n    {\r\n      \"name\": \"\",\r\n      \"email\": \"abc@gmail.com\",\r\n      \"description\": \"\",\r\n      \"serialNumber\": \"AXSAA26\"\r\n    },\r\n    {\r\n      \"name\": \"\",\r\n      \"email\": \"abc@gmail.com\",\r\n      \"description\": \"\",\r\n      \"serialNumber\": \"AXSAA27\"\r\n    },\r\n    {\r\n      \"name\": \"\",\r\n      \"email\": \"abc@gmail.com\",\r\n      \"description\": \"\",\r\n      \"serialNumber\": \"AXSAA28\"\r\n    }\r\n\t,\r\n    {\r\n      \"name\": \"\",\r\n      \"email\": \"abc@gmail.com\",\r\n      \"description\": \"\",\r\n      \"serialNumber\": \"AXSAA29\"\r\n    },\r\n    {\r\n      \"name\": \"\",\r\n      \"email\": \"abc@gmail.com\",\r\n      \"description\": \"\",\r\n      \"serialNumber\": \"AXSAA20\"\r\n    },\r\n\t{\r\n      \"name\": \"\",\r\n      \"email\": \"abc@gmail.com\",\r\n      \"description\": \"\",\r\n      \"serialNumber\": \"AXSAA21\"\r\n    },\r\n    {\r\n      \"name\": \"\",\r\n      \"email\": \"abc@gmail.com\",\r\n      \"description\": \"\",\r\n      \"serialNumber\": \"AXSAA22\"\r\n    },\r\n    {\r\n      \"name\": \"\",\r\n      \"email\": \"abc@gmail.com\",\r\n      \"description\": \"\",\r\n      \"serialNumber\": \"AXSAA23\"\r\n    },\r\n    {\r\n      \"name\": \"\",\r\n      \"email\": \"abc@gmail.com\",\r\n      \"description\": \"\",\r\n      \"serialNumber\": \"AXSAA24\"\r\n    },\r\n\t{\r\n      \"name\": \"\",\r\n      \"email\": \"abc@gmail.com\",\r\n      \"description\": \"\",\r\n      \"serialNumber\": \"AXSAA25\"\r\n    },\r\n    {\r\n      \"name\": \"\",\r\n      \"email\": \"abc@gmail.com\",\r\n      \"description\": \"\",\r\n      \"serialNumber\": \"AXSAA26\"\r\n    },\r\n    {\r\n      \"name\": \"\",\r\n      \"email\": \"abc@gmail.com\",\r\n      \"description\": \"\",\r\n      \"serialNumber\": \"AXSAA27\"\r\n    },\r\n    {\r\n      \"name\": \"\",\r\n      \"email\": \"abc@gmail.com\",\r\n      \"description\": \"\",\r\n      \"serialNumber\": \"AXSAA28\"\r\n    }\r\n\t,\r\n    {\r\n      \"name\": \"\",\r\n      \"email\": \"abc@gmail.com\",\r\n      \"description\": \"\",\r\n      \"serialNumber\": \"AXSAA29\"\r\n    },\r\n    {\r\n      \"name\": \"\",\r\n      \"email\": \"abc@gmail.com\",\r\n      \"description\": \"\",\r\n      \"serialNumber\": \"AXSAA30\"\r\n    },\r\n\t{\r\n      \"name\": \"\",\r\n      \"email\": \"abc@gmail.com\",\r\n      \"description\": \"\",\r\n      \"serialNumber\": \"AXSAA31\"\r\n    },\r\n    {\r\n      \"name\": \"\",\r\n      \"email\": \"abc@gmail.com\",\r\n      \"description\": \"\",\r\n      \"serialNumber\": \"AXSAA32\"\r\n    },\r\n    {\r\n      \"name\": \"\",\r\n      \"email\": \"abc@gmail.com\",\r\n      \"description\": \"\",\r\n      \"serialNumber\": \"AXSAA33\"\r\n    },\r\n    {\r\n      \"name\": \"\",\r\n      \"email\": \"abc@gmail.com\",\r\n      \"description\": \"\",\r\n      \"serialNumber\": \"AXSAA34\"\r\n    },\r\n\t{\r\n      \"name\": \"\",\r\n      \"email\": \"abc@gmail.com\",\r\n      \"description\": \"\",\r\n      \"serialNumber\": \"AXSAA35\"\r\n    },\r\n    {\r\n      \"name\": \"\",\r\n      \"email\": \"abc@gmail.com\",\r\n      \"description\": \"\",\r\n      \"serialNumber\": \"AXSAA36\"\r\n    },\r\n    {\r\n      \"name\": \"\",\r\n      \"email\": \"abc@gmail.com\",\r\n      \"description\": \"\",\r\n      \"serialNumber\": \"AXSAA37\"\r\n    },\r\n    {\r\n      \"name\": \"\",\r\n      \"email\": \"abc@gmail.com\",\r\n      \"description\": \"\",\r\n      \"serialNumber\": \"AXSAA38\"\r\n    }\r\n\t,\r\n    {\r\n      \"name\": \"\",\r\n      \"email\": \"abc@gmail.com\",\r\n      \"description\": \"\",\r\n      \"serialNumber\": \"AXSAA39\"\r\n    },\r\n    {\r\n      \"name\": \"\",\r\n      \"email\": \"abc@gmail.com\",\r\n      \"description\": \"\",\r\n      \"serialNumber\": \"AXSAA40\"\r\n    },\r\n\t{\r\n      \"name\": \"\",\r\n      \"email\": \"abc@gmail.com\",\r\n      \"description\": \"\",\r\n      \"serialNumber\": \"AXSAA41\"\r\n    },\r\n    {\r\n      \"name\": \"\",\r\n      \"email\": \"abc@gmail.com\",\r\n      \"description\": \"\",\r\n      \"serialNumber\": \"AXSAA42\"\r\n    },\r\n    {\r\n      \"name\": \"\",\r\n      \"email\": \"abc@gmail.com\",\r\n      \"description\": \"\",\r\n      \"serialNumber\": \"AXSAA43\"\r\n    },\r\n    {\r\n      \"name\": \"\",\r\n      \"email\": \"abc@gmail.com\",\r\n      \"description\": \"\",\r\n      \"serialNumber\": \"AXSAA44\"\r\n    },\r\n\t{\r\n      \"name\": \"\",\r\n      \"email\": \"abc@gmail.com\",\r\n      \"description\": \"\",\r\n      \"serialNumber\": \"AXSAA45\"\r\n    },\r\n    {\r\n      \"name\": \"\",\r\n      \"email\": \"abc@gmail.com\",\r\n      \"description\": \"\",\r\n      \"serialNumber\": \"AXSAA46\"\r\n    },\r\n    {\r\n      \"name\": \"\",\r\n      \"email\": \"abc@gmail.com\",\r\n      \"description\": \"\",\r\n      \"serialNumber\": \"AXSAA47\"\r\n    },\r\n    {\r\n      \"name\": \"\",\r\n      \"email\": \"abc@gmail.com\",\r\n      \"description\": \"\",\r\n      \"serialNumber\": \"AXSAA48\"\r\n    }\r\n\t,\r\n    {\r\n      \"name\": \"\",\r\n      \"email\": \"abc@gmail.com\",\r\n      \"description\": \"\",\r\n      \"serialNumber\": \"AXSAA49\"\r\n    },\r\n    {\r\n      \"name\": \"\",\r\n      \"email\": \"abc@gmail.com\",\r\n      \"description\": \"\",\r\n      \"serialNumber\": \"AXSAA50\"\r\n    },\r\n\t{\r\n      \"name\": \"\",\r\n      \"email\": \"abc@gmail.com\",\r\n      \"description\": \"\",\r\n      \"serialNumber\": \"AXSAA51\"\r\n    },\r\n    {\r\n      \"name\": \"\",\r\n      \"email\": \"abc@gmail.com\",\r\n      \"description\": \"\",\r\n      \"serialNumber\": \"AXSAA52\"\r\n    },\r\n    {\r\n      \"name\": \"\",\r\n      \"email\": \"abc@gmail.com\",\r\n      \"description\": \"\",\r\n      \"serialNumber\": \"AXSAA53\"\r\n    },\r\n    {\r\n      \"name\": \"\",\r\n      \"email\": \"abc@gmail.com\",\r\n      \"description\": \"\",\r\n      \"serialNumber\": \"AXSAA54\"\r\n    },\r\n\t{\r\n      \"name\": \"\",\r\n      \"email\": \"abc@gmail.com\",\r\n      \"description\": \"\",\r\n      \"serialNumber\": \"AXSAA55\"\r\n    },\r\n    {\r\n      \"name\": \"\",\r\n      \"email\": \"abc@gmail.com\",\r\n      \"description\": \"\",\r\n      \"serialNumber\": \"AXSAA56\"\r\n    },\r\n    {\r\n      \"name\": \"\",\r\n      \"email\": \"abc@gmail.com\",\r\n      \"description\": \"\",\r\n      \"serialNumber\": \"AXSAA57\"\r\n    },\r\n    {\r\n      \"name\": \"\",\r\n      \"email\": \"abc@gmail.com\",\r\n      \"description\": \"\",\r\n      \"serialNumber\": \"AXSAA58\"\r\n    }\r\n\t,\r\n    {\r\n      \"name\": \"\",\r\n      \"email\": \"abc@gmail.com\",\r\n      \"description\": \"\",\r\n      \"serialNumber\": \"AXSAA59\"\r\n    },\r\n    {\r\n      \"name\": \"\",\r\n      \"email\": \"abc@gmail.com\",\r\n      \"description\": \"\",\r\n      \"serialNumber\": \"AXSAA60\"\r\n    },\r\n\t{\r\n      \"name\": \"\",\r\n      \"email\": \"abc@gmail.com\",\r\n      \"description\": \"\",\r\n      \"serialNumber\": \"AXSAA61\"\r\n    },\r\n    {\r\n      \"name\": \"\",\r\n      \"email\": \"abc@gmail.com\",\r\n      \"description\": \"\",\r\n      \"serialNumber\": \"AXSAA62\"\r\n    },\r\n    {\r\n      \"name\": \"\",\r\n      \"email\": \"abc@gmail.com\",\r\n      \"description\": \"\",\r\n      \"serialNumber\": \"AXSAA64\"\r\n    },\r\n    {\r\n      \"name\": \"\",\r\n      \"email\": \"abc@gmail.com\",\r\n      \"description\": \"\",\r\n      \"serialNumber\": \"AXSAA65\"\r\n    },\r\n\t{\r\n      \"name\": \"\",\r\n      \"email\": \"abc@gmail.com\",\r\n      \"description\": \"\",\r\n      \"serialNumber\": \"AXSAA66\"\r\n    },\r\n    {\r\n      \"name\": \"\",\r\n      \"email\": \"abc@gmail.com\",\r\n      \"description\": \"\",\r\n      \"serialNumber\": \"AXSAA67\"\r\n    },\r\n    {\r\n      \"name\": \"\",\r\n      \"email\": \"abc@gmail.com\",\r\n      \"description\": \"\",\r\n      \"serialNumber\": \"AXSAA68\"\r\n    },\r\n    {\r\n      \"name\": \"\",\r\n      \"email\": \"abc@gmail.com\",\r\n      \"description\": \"\",\r\n      \"serialNumber\": \"AXSAA69\"\r\n    }\r\n\t,\r\n    {\r\n      \"name\": \"\",\r\n      \"email\": \"abc@gmail.com\",\r\n      \"description\": \"\",\r\n      \"serialNumber\": \"AXSAA70\"\r\n    },\r\n    {\r\n      \"name\": \"\",\r\n      \"email\": \"abc@gmail.com\",\r\n      \"description\": \"\",\r\n      \"serialNumber\": \"AXSAA71\"\r\n    },\r\n\t{\r\n      \"name\": \"\",\r\n      \"email\": \"abc@gmail.com\",\r\n      \"description\": \"\",\r\n      \"serialNumber\": \"AXSAA72\"\r\n    },\r\n    {\r\n      \"name\": \"\",\r\n      \"email\": \"abc@gmail.com\",\r\n      \"description\": \"\",\r\n      \"serialNumber\": \"AXSAA73\"\r\n    },\r\n    {\r\n      \"name\": \"\",\r\n      \"email\": \"abc@gmail.com\",\r\n      \"description\": \"\",\r\n      \"serialNumber\": \"AXSAA74\"\r\n    },\r\n    {\r\n      \"name\": \"\",\r\n      \"email\": \"abc@gmail.com\",\r\n      \"description\": \"\",\r\n      \"serialNumber\": \"AXSAA75\"\r\n    },\r\n\t{\r\n      \"name\": \"\",\r\n      \"email\": \"abc@gmail.com\",\r\n      \"description\": \"\",\r\n      \"serialNumber\": \"AXSAA76\"\r\n    },\r\n    {\r\n      \"name\": \"\",\r\n      \"email\": \"abc@gmail.com\",\r\n      \"description\": \"\",\r\n      \"serialNumber\": \"AXSAA77\"\r\n    },\r\n    {\r\n      \"name\": \"\",\r\n      \"email\": \"abc@gmail.com\",\r\n      \"description\": \"\",\r\n      \"serialNumber\": \"AXSAA78\"\r\n    },\r\n    {\r\n      \"name\": \"\",\r\n      \"email\": \"abc@gmail.com\",\r\n      \"description\": \"\",\r\n      \"serialNumber\": \"AXSAA79\"\r\n    }\r\n\t,\r\n    {\r\n      \"name\": \"\",\r\n      \"email\": \"abc@gmail.com\",\r\n      \"description\": \"\",\r\n      \"serialNumber\": \"AXSAA80\"\r\n    },\r\n    {\r\n      \"name\": \"\",\r\n      \"email\": \"abc@gmail.com\",\r\n      \"description\": \"\",\r\n      \"serialNumber\": \"AXSAA81\"\r\n    },\r\n\t{\r\n      \"name\": \"\",\r\n      \"email\": \"abc@gmail.com\",\r\n      \"description\": \"\",\r\n      \"serialNumber\": \"AXSAA82\"\r\n    },\r\n    {\r\n      \"name\": \"\",\r\n      \"email\": \"abc@gmail.com\",\r\n      \"description\": \"\",\r\n      \"serialNumber\": \"AXSAA83\"\r\n    },\r\n    {\r\n      \"name\": \"\",\r\n      \"email\": \"abc@gmail.com\",\r\n      \"description\": \"\",\r\n      \"serialNumber\": \"AXSAA84\"\r\n    },\r\n    {\r\n      \"name\": \"\",\r\n      \"email\": \"abc@gmail.com\",\r\n      \"description\": \"\",\r\n      \"serialNumber\": \"AXSAA85\"\r\n    },\r\n\t{\r\n      \"name\": \"\",\r\n      \"email\": \"abc@gmail.com\",\r\n      \"description\": \"\",\r\n      \"serialNumber\": \"AXSAA87\"\r\n    },\r\n    {\r\n      \"name\": \"\",\r\n      \"email\": \"abc@gmail.com\",\r\n      \"description\": \"\",\r\n      \"serialNumber\": \"AXSAA88\"\r\n    },\r\n    {\r\n      \"name\": \"\",\r\n      \"email\": \"abc@gmail.com89\",\r\n      \"description\": \"\",\r\n      \"serialNumber\": \"AXSAA90\"\r\n    },\r\n    {\r\n      \"name\": \"\",\r\n      \"email\": \"abc@gmail.com\",\r\n      \"description\": \"\",\r\n      \"serialNumber\": \"AXSAA91\"\r\n    }\r\n\t,\r\n    {\r\n      \"name\": \"\",\r\n      \"email\": \"abc@gmail.com\",\r\n      \"description\": \"\",\r\n      \"serialNumber\": \"AXSAA92\"\r\n    },\r\n    {\r\n      \"name\": \"\",\r\n      \"email\": \"abc@gmail.com\",\r\n      \"description\": \"\",\r\n      \"serialNumber\": \"AXSAA93\"\r\n    },\r\n\t{\r\n      \"name\": \"\",\r\n      \"email\": \"abc@gmail.com\",\r\n      \"description\": \"\",\r\n      \"serialNumber\": \"AXSAA94\"\r\n    },\r\n    {\r\n      \"name\": \"\",\r\n      \"email\": \"abc@gmail.com\",\r\n      \"description\": \"\",\r\n      \"serialNumber\": \"AXSAA95\"\r\n    },\r\n    {\r\n      \"name\": \"\",\r\n      \"email\": \"abc@gmail.com\",\r\n      \"description\": \"\",\r\n      \"serialNumber\": \"AXSAA96\"\r\n    },\r\n    {\r\n      \"name\": \"\",\r\n      \"email\": \"abc@gmail.com\",\r\n      \"description\": \"\",\r\n      \"serialNumber\": \"AXSAA97\"\r\n    },\r\n\t{\r\n      \"name\": \"\",\r\n      \"email\": \"abc@gmail.com\",\r\n      \"description\": \"\",\r\n      \"serialNumber\": \"AXSAA98\"\r\n    },\r\n    {\r\n      \"name\": \"\",\r\n      \"email\": \"abc@gmail.com\",\r\n      \"description\": \"\",\r\n      \"serialNumber\": \"AXSAA99\"\r\n    },\r\n    {\r\n      \"name\": \"\",\r\n      \"email\": \"abc@gmail.com\",\r\n      \"description\": \"\",\r\n      \"serialNumber\": \"AXSAA200\"\r\n    },\r\n    {\r\n      \"name\": \"\",\r\n      \"email\": \"abc@gmail.com\",\r\n      \"description\": \"\",\r\n      \"serialNumber\": \"AXSAA201\"\r\n    }\r\n\t,\r\n    {\r\n      \"name\": \"\",\r\n      \"email\": \"abc@gmail.com\",\r\n      \"description\": \"\",\r\n      \"serialNumber\": \"AXSAA202\"\r\n    },\r\n    {\r\n      \"name\": \"\",\r\n      \"email\": \"abc@gmail.com\",\r\n      \"description\": \"\",\r\n      \"serialNumber\": \"AXSAA204\"\r\n    },\r\n\t\t{\r\n      \"name\": \"\",\r\n      \"email\": \"abc@gmail.com\",\r\n      \"description\": \"\",\r\n      \"serialNumber\": \"AXSAA84\"\r\n    },\r\n    {\r\n      \"name\": \"\",\r\n      \"email\": \"abc@gmail.com\",\r\n      \"description\": \"\",\r\n      \"serialNumber\": \"AXSAA85\"\r\n    },\r\n\t{\r\n      \"name\": \"\",\r\n      \"email\": \"abc@gmail.com\",\r\n      \"description\": \"\",\r\n      \"serialNumber\": \"AXSAA87\"\r\n    },\r\n    {\r\n      \"name\": \"\",\r\n      \"email\": \"abc@gmail.com\",\r\n      \"description\": \"\",\r\n      \"serialNumber\": \"AXSAA88\"\r\n    },\r\n    {\r\n      \"name\": \"\",\r\n      \"email\": \"abc@gmail.com89\",\r\n      \"description\": \"\",\r\n      \"serialNumber\": \"AXSAA90\"\r\n    },\r\n    {\r\n      \"name\": \"\",\r\n      \"email\": \"abc@gmail.com\",\r\n      \"description\": \"\",\r\n      \"serialNumber\": \"AXSAA91\"\r\n    }\r\n\t,\r\n    {\r\n      \"name\": \"\",\r\n      \"email\": \"abc@gmail.com\",\r\n      \"description\": \"\",\r\n      \"serialNumber\": \"AXSAA92\"\r\n    },\r\n    {\r\n      \"name\": \"\",\r\n      \"email\": \"abc@gmail.com\",\r\n      \"description\": \"\",\r\n      \"serialNumber\": \"AXSAA93\"\r\n    },\r\n\t{\r\n      \"name\": \"\",\r\n      \"email\": \"abc@gmail.com\",\r\n      \"description\": \"\",\r\n      \"serialNumber\": \"AXSAA94\"\r\n    },\r\n    {\r\n      \"name\": \"\",\r\n      \"email\": \"abc@gmail.com\",\r\n      \"description\": \"\",\r\n      \"serialNumber\": \"AXSAA95\"\r\n    },\r\n    {\r\n      \"name\": \"\",\r\n      \"email\": \"abc@gmail.com\",\r\n      \"description\": \"\",\r\n      \"serialNumber\": \"AXSAA96\"\r\n    },\r\n    {\r\n      \"name\": \"\",\r\n      \"email\": \"abc@gmail.com\",\r\n      \"description\": \"\",\r\n      \"serialNumber\": \"AXSAA97\"\r\n    },\r\n\t{\r\n      \"name\": \"\",\r\n      \"email\": \"abc@gmail.com\",\r\n      \"description\": \"\",\r\n      \"serialNumber\": \"AXSAA98\"\r\n    },\r\n    {\r\n      \"name\": \"\",\r\n      \"email\": \"abc@gmail.com\",\r\n      \"description\": \"\",\r\n      \"serialNumber\": \"AXSAA99\"\r\n    },\r\n    {\r\n      \"name\": \"\",\r\n      \"email\": \"abc@gmail.com\",\r\n      \"description\": \"\",\r\n      \"serialNumber\": \"AXSAA200\"\r\n    },\r\n    {\r\n      \"name\": \"\",\r\n      \"email\": \"abc@gmail.com\",\r\n      \"description\": \"\",\r\n      \"serialNumber\": \"AXSAA201\"\r\n    }\r\n\t,\r\n    {\r\n      \"name\": \"\",\r\n      \"email\": \"abc@gmail.com\",\r\n      \"description\": \"\",\r\n      \"serialNumber\": \"AXSAA202\"\r\n    },\r\n    {\r\n      \"name\": \"\",\r\n      \"email\": \"abc@gmail.com\",\r\n      \"description\": \"\",\r\n      \"serialNumber\": \"AXSAA204\"\r\n    }\r\n\r\n  ]\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{Url}}/api/devices",
+					"host": [
+						"{{Url}}"
+					],
+					"path": [
+						"api",
+						"devices"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "CreateDevices_Duplicate_Validation",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Serial Number Duplicate Validation\", function () {\r",
+							"    pm.response.to.have.status(400);\r",
+							"    pm.expect(responseBody == \"Serial Number cannot be duplicated\").is.true;\r",
+							"});\r",
+							"\r",
+							"\r",
+							"\r",
+							"\r",
+							"\r",
+							"\r",
+							"\r",
+							"\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{ApiToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "x-realwear-workspace",
+						"type": "text",
+						"value": "{{Workspace}}"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"devices\": [\r\n    {\r\n      \"name\": \"name\",\r\n      \"email\": \"abc@abc.com\",\r\n      \"description\": \"\",\r\n      \"serialNumber\": \"{{SerialNumber}}\"\r\n    },\r\n     {\r\n      \"name\": \"name\",\r\n      \"email\": \"abc2@abc.com\",\r\n      \"description\": \"\",\r\n      \"serialNumber\": \"{{SerialNumber}}\"\r\n    }\r\n  ]\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{Url}}/api/devices",
+					"host": [
+						"{{Url}}"
+					],
+					"path": [
+						"api",
+						"devices"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "CreateDevices_Success",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"   const serialNumberReq = {\r",
+							"       url:pm.collectionVariables.get(\"Url\")+'/api/devices?search='+pm.collectionVariables.get(\"SerialNumber\"),\r",
+							"       method: 'GET',\r",
+							"       header:{\"x-realwear-workspace\":pm.collectionVariables.get(\"Workspace\"),\r",
+							"       \"Authorization\": \"Bearer \" + pm.environment.get(\"ApiToken\")}\r",
+							"   };\r",
+							"\r",
+							" pm.sendRequest(serialNumberReq,(_,response)=>{\r",
+							"   console.log(response);  \r",
+							"        if(response.json().devices.length >0)\r",
+							"        {\r",
+							"            var deviceId = response.json().devices[0].id;\r",
+							"            const deleteReq = {\r",
+							"                url:pm.collectionVariables.get(\"Url\")+'/api/devices?id='+deviceId,\r",
+							"                method: 'DELETE',\r",
+							"                header:{\"x-realwear-workspace\":pm.collectionVariables.get(\"Workspace\"),\r",
+							"       \"Authorization\": \"Bearer \" + pm.environment.get(\"ApiToken\")}\r",
+							"   };\r",
+							"   pm.sendRequest(deleteReq,(_,res)=>{\r",
+							"        pm.expect(res).to.have.property('code', 204);\r",
+							"   });\r",
+							"        }\r",
+							"    })\r",
+							"\r",
+							"\r",
+							"   \r",
+							"\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							" pm.test(\"Status Code 204\", function () \r",
+							"{\r",
+							"    pm.response.to.have.status(204);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{ApiToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "x-realwear-workspace",
+						"type": "text",
+						"value": "{{Workspace}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"devices\": [\r\n    {\r\n      \"name\": \"string\",\r\n      \"email\": \"user@example.com\",\r\n      \"description\": \"string\",\r\n      \"serialNumber\": \"{{SerialNumber}}\"\r\n    }\r\n  ]\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{Url}}/api/devices",
+					"host": [
+						"{{Url}}"
+					],
+					"path": [
+						"api",
+						"devices"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "CreateDevices_VerifyConflict_Validation",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Serial Number cannot be duplicated\", function () \r",
+							"{\r",
+							"    pm.response.to.have.status(409);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{ApiToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "x-realwear-workspace",
+						"type": "text",
+						"value": "{{Workspace}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"devices\": [\r\n    {\r\n      \"name\": \"string\",\r\n      \"email\": \"user@example.com\",\r\n      \"description\": \"string\",\r\n      \"serialNumber\": \"{{SerialNumber}}\"\r\n    }\r\n  ]\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{Url}}/api/devices",
+					"host": [
+						"{{Url}}"
+					],
+					"path": [
+						"api",
+						"devices"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GetDevice_MinimumSearchLength_validation",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Get Device Minimum Search Length validation\", function () \r",
+							"{\r",
+							"pm.response.to.have.status(400);\r",
+							"pm.response.to.be.error;\r",
+							"pm.expect(responseBody == \"Search should be minimum of 5 characters\").is.true;\r",
+							"\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{ApiToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "x-realwear-workspace",
+						"value": "{{Workspace}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{Url}}/api/devices?search=1234",
+					"host": [
+						"{{Url}}"
+					],
+					"path": [
+						"api",
+						"devices"
+					],
+					"query": [
+						{
+							"key": "search",
+							"value": "1234"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GetDevice_Created_Success",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Get Id of Device\", function () \r",
+							"{\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							" pm.test(\"Response has valid data\", function () {\r",
+							"    const createddevice = JSON.parse(responseBody) \r",
+							"    if(createddevice.devices.length >0)\r",
+							"        {\r",
+							"            postman.setGlobalVariable(\"DeviceId\",createddevice.devices[0].id);\r",
+							"        }\r",
+							"      pm.expect(createddevice.devices.length > 0 ).is.true;\r",
+							"\r",
+							"});       "
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{ApiToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "x-realwear-workspace",
+						"value": "{{Workspace}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{Url}}/api/devices?search={{SerialNumber}}",
+					"host": [
+						"{{Url}}"
+					],
+					"path": [
+						"api",
+						"devices"
+					],
+					"query": [
+						{
+							"key": "search",
+							"value": "{{SerialNumber}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GetAllDevices_SuperAdmin_MinimumSearchLength_Validation",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Get All Devices Minimum Search Length validation\", function () \r",
+							"{\r",
+							"pm.response.to.have.status(400);\r",
+							"pm.response.to.be.error;\r",
+							"pm.expect(responseBody == \"Search should be minimum of 5 characters\").is.true;\r",
+							"\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{ApiTokenSuperAdmin}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{Url}}/api/alldevices?search=1234",
+					"host": [
+						"{{Url}}"
+					],
+					"path": [
+						"api",
+						"alldevices"
+					],
+					"query": [
+						{
+							"key": "search",
+							"value": "1234"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GetAllDevices_Limit_From_Validation",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"response is Bad Request\", function () {\r",
+							"    pm.response.to.have.status(400);\r",
+							"   \r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"Invalid Limit and From Parameter\", function () {\r",
+							"\r",
+							"const paramsString = request.url.split('?')[1];\r",
+							"console.log(paramsString);\r",
+							"let From_Message=\"\";\r",
+							"let Limit_Message=\"\";\r",
+							"\r",
+							"if(paramsString!=null)\r",
+							"{\r",
+							" const eachParamArray = paramsString.split('&');\r",
+							"let params = {};\r",
+							"eachParamArray.forEach((param) => {\r",
+							"    const key = param.split('=')[0];\r",
+							"    const value = param.split('=')[1];\r",
+							"    console.log(key);\r",
+							"    console.log(value);\r",
+							"\r",
+							"    if(key==\"limit\")\r",
+							"    {\r",
+							"       Limit_Message = \"The value '\"+value+\"' is not valid for Limit.\";\r",
+							"    }\r",
+							"\r",
+							"     if(key==\"from\")\r",
+							"    {\r",
+							"       From_Message = \"The value '\"+value+\"' is not valid for From.\";\r",
+							"    }\r",
+							"});\r",
+							"\r",
+							"      responseJSON = JSON.parse(responseBody);\r",
+							"      console.log(responseJSON.errors.From);\r",
+							"      pm.expect(responseJSON.errors.From==From_Message).is.true;\r",
+							"      pm.expect(responseJSON.errors.Limit==Limit_Message).is.true;\r",
+							"}\r",
+							"\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{ApiTokenSuperAdmin}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{Url}}/api/alldevices?from=XXX&limit=XXX&search=",
+					"host": [
+						"{{Url}}"
+					],
+					"path": [
+						"api",
+						"alldevices"
+					],
+					"query": [
+						{
+							"key": "from",
+							"value": "XXX"
+						},
+						{
+							"key": "limit",
+							"value": "XXX"
+						},
+						{
+							"key": "search",
+							"value": ""
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GetAllDevices_SuperAdmin_Success",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"\r",
+							"pm.test(\"limit should be null or an Integer Value and should not greater than 500\", function () {\r",
+							"\r",
+							"const paramsString = request.url.split('?')[1];\r",
+							"\r",
+							"if(paramsString!=null)\r",
+							"{\r",
+							" const eachParamArray = paramsString.split('&');\r",
+							"let params = {};\r",
+							"eachParamArray.forEach((param) => {\r",
+							"    const key = param.split('=')[0];\r",
+							"    const value = param.split('=')[1];\r",
+							"    console.log(key);\r",
+							"    console.log(value);\r",
+							"\r",
+							"    if(key==\"limit\" && value!=null )\r",
+							"    {\r",
+							"        pm.expect(value<=500).is.true;\r",
+							"    }\r",
+							"\r",
+							"});\r",
+							"\r",
+							"}\r",
+							"\r",
+							"responseJSON = JSON.parse(responseBody);\r",
+							" pm.expect(responseJSON.devices.length<=500).is.true;\r",
+							"\r",
+							"});\r",
+							"\r",
+							"pm.test(\"response is ok\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"   \r",
+							"});\r",
+							"\r",
+							"pm.test(\"response is valid and have a body\", function () {\r",
+							"     // assert that the status code is 200\r",
+							"     pm.response.to.be.ok; // info, success, redirection, clientError,  serverError, are other variants\r",
+							"     // assert that the response has a valid JSON body\r",
+							"     pm.response.to.be.withBody;\r",
+							"     pm.response.to.be.json; // this assertion also checks if a body  exists, so the above check is not needed\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"response has valid nextCursor\", function () {\r",
+							"\r",
+							"    responseJSON = JSON.parse(responseBody);\r",
+							"    console.log(responseJSON.nextCursor);\r",
+							"    console.log(\"Length\" + responseJSON.devices.length);\r",
+							"\r",
+							"if( responseJSON.nextCursor > 0  )\r",
+							"{\r",
+							"    postman.setGlobalVariable(\"nextCursor\",responseJSON.nextCursor);\r",
+							"    \r",
+							"}\r",
+							"    if(responseJSON.nextCursor != null && responseJSON.nextCursor > 0)\r",
+							"      pm.expect(responseJSON.nextCursor > 0 ).is.true;\r",
+							"      else\r",
+							"      pm.expect(responseJSON.nextCursor == null ).is.true;\r",
+							"\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{ApiTokenSuperAdmin}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{Url}}/api/alldevices?from=0&limit=1&search={{SerialNumber}}",
+					"host": [
+						"{{Url}}"
+					],
+					"path": [
+						"api",
+						"alldevices"
+					],
+					"query": [
+						{
+							"key": "from",
+							"value": "0"
+						},
+						{
+							"key": "limit",
+							"value": "1"
+						},
+						{
+							"key": "search",
+							"value": "{{SerialNumber}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GetAllDevices_OtherUser_Failure",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Only SuperAdmin can access\", function () {\r",
+							"pm.response.to.have.status(403);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{ApiToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{Url}}/api/alldevices?from=0&limit=5&search=",
+					"host": [
+						"{{Url}}"
+					],
+					"path": [
+						"api",
+						"alldevices"
+					],
+					"query": [
+						{
+							"key": "from",
+							"value": "0"
+						},
+						{
+							"key": "limit",
+							"value": "5"
+						},
+						{
+							"key": "search",
+							"value": ""
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "UpdateDevice_Name_Length_Validation",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Name cannot be more than 40 characters\", function () {\r",
+							"    pm.response.to.have.status(400);\r",
+							"    pm.response.to.be.error;\r",
+							"\r",
+							"    obj = JSON.parse(responseBody);\r",
+							"    Object.keys(obj).forEach(key => {\r",
+							" \r",
+							"    if (typeof obj[key] === 'object') {\r",
+							"           var childObj=obj[key];\r",
+							" \r",
+							"            Object.keys(childObj).forEach(keys => {\r",
+							"             if(\"Devices[0].Name\" == keys )\r",
+							"            {\r",
+							"               pm.expect(childObj[keys] == \"Name cannot be more than 40 characters\").is.true;\r",
+							"            }\r",
+							"\r",
+							"            })\r",
+							"         }\r",
+							"    })\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{ApiToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [
+					{
+						"key": "x-realwear-workspace",
+						"type": "text",
+						"value": "{{Workspace}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"name\": \"stringstringstringstringstringstringstringstringstringstringstringstringstringstringstringstringstringstringstringstringstringstringstringstringstringstringstring\",\r\n  \"email\": \"user@example.com\",\r\n  \"description\": null\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{Url}}/api/devices?id={{DeviceId}}",
+					"host": [
+						"{{Url}}"
+					],
+					"path": [
+						"api",
+						"devices"
+					],
+					"query": [
+						{
+							"key": "id",
+							"value": "{{DeviceId}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "UpdateDevice_Description_Length_Validation",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Description Max Length Validation\", function () {\r",
+							"    pm.response.to.have.status(400);\r",
+							"    pm.response.to.be.error;\r",
+							"\r",
+							"    obj = JSON.parse(responseBody);\r",
+							"    Object.keys(obj).forEach(key => {\r",
+							" \r",
+							"    if (typeof obj[key] === 'object') {\r",
+							"           var childObj=obj[key];\r",
+							" \r",
+							"            Object.keys(childObj).forEach(keys => {\r",
+							"             if(\"Devices[0].Description\" == keys )\r",
+							"            {\r",
+							"               pm.expect(childObj[keys] == \"Description cannot be more than 250 characters\").is.true;\r",
+							"            }\r",
+							"\r",
+							"            })\r",
+							"         }\r",
+							"    })\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{ApiToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [
+					{
+						"key": "x-realwear-workspace",
+						"type": "text",
+						"value": "{{Workspace}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"name\": \"test\",\r\n  \"email\": \"user@example.com\",\r\n  \"description\": \"Updatedstringstringstringstringstringstringstringstringstringstringstringstringstringstringstringstringstringstringstringstringstringstringstringstringstringstringstringstringstringstringstringstringstringstringstringstringstringstringstringstringstringstringstringstringstringstringstringstringstringstringstringstringstringstringstringstringstringstringstringstringstringstringstringstringstringstringstringstringstringstringstringstringstringstringstringstringstringstringstringstringstringstring\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{Url}}/api/devices?id={{DeviceId}}",
+					"host": [
+						"{{Url}}"
+					],
+					"path": [
+						"api",
+						"devices"
+					],
+					"query": [
+						{
+							"key": "id",
+							"value": "{{DeviceId}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "UpdateDevice_Email_Validation",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Invalid Email Address - Update\", function () {\r",
+							"    pm.response.to.have.status(400);\r",
+							"    pm.response.to.be.error;\r",
+							"\r",
+							"    obj = JSON.parse(responseBody);\r",
+							"    Object.keys(obj).forEach(key => {\r",
+							" \r",
+							"    if (typeof obj[key] === 'object') {\r",
+							"           var childObj=obj[key];\r",
+							" \r",
+							"            Object.keys(childObj).forEach(keys => {\r",
+							" \r",
+							"            if(\"Devices[0].Email\" == keys )\r",
+							"            {\r",
+							"               pm.expect(childObj[keys] == \"Invalid Email Address\").is.true;\r",
+							"            }\r",
+							"\r",
+							"            })\r",
+							"         }\r",
+							"    })\r",
+							"});\r",
+							"\r",
+							"\r",
+							"\r",
+							"\r",
+							"\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{ApiToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [
+					{
+						"key": "x-realwear-workspace",
+						"type": "text",
+						"value": "{{Workspace}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"name\": \"string\",\r\n  \"email\": \"userexample.com\",\r\n  \"description\": \"Updatedstring\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{Url}}/api/devices?id={{DeviceId}}",
+					"host": [
+						"{{Url}}"
+					],
+					"path": [
+						"api",
+						"devices"
+					],
+					"query": [
+						{
+							"key": "id",
+							"value": "{{DeviceId}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "UpdateDevice_DeviceNotFound_Validation",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Device not found - Update\", function () {\r",
+							"pm.response.to.have.status(404);\r",
+							"pm.expect(responseBody == \"Device not found\").is.true;\r",
+							"});\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{ApiToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [
+					{
+						"key": "x-realwear-workspace",
+						"type": "text",
+						"value": "{{Workspace}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"name\": \"string\",\r\n  \"email\": \"user@example.com\",\r\n  \"description\": \"Updatedstring\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{Url}}/api/devices?id=6012e6d2f57d2f724a7003d4",
+					"host": [
+						"{{Url}}"
+					],
+					"path": [
+						"api",
+						"devices"
+					],
+					"query": [
+						{
+							"key": "id",
+							"value": "6012e6d2f57d2f724a7003d4"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "UpdateDevice_Success",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							" pm.test(\"Device Update Success\", function () \r",
+							"{\r",
+							"    pm.response.to.have.status(204);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{ApiToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [
+					{
+						"key": "x-realwear-workspace",
+						"type": "text",
+						"value": "{{Workspace}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"name\": \"UpdatedString\",\r\n  \"email\": \"user@example.com\",\r\n  \"description\": \"UpdatedDescription\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{Url}}/api/devices?id={{DeviceId}}",
+					"host": [
+						"{{Url}}"
+					],
+					"path": [
+						"api",
+						"devices"
+					],
+					"query": [
+						{
+							"key": "id",
+							"value": "{{DeviceId}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "DeleteDevice_DeviceNotFound_Validation",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Device not found - Delete\", function () {\r",
+							"pm.response.to.have.status(404);\r",
+							"pm.expect(responseBody == \"Device not found\").is.true;\r",
+							"});\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{ApiToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "x-realwear-workspace",
+						"type": "text",
+						"value": "{{Workspace}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{Url}}/api/devices?id=6012c6d2e57d2f724a7003d4",
+					"host": [
+						"{{Url}}"
+					],
+					"path": [
+						"api",
+						"devices"
+					],
+					"query": [
+						{
+							"key": "id",
+							"value": "6012c6d2e57d2f724a7003d4"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "DeleteDevice_Success",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							" pm.test(\"Device Delete Success\", function () \r",
+							"{\r",
+							"    pm.response.to.have.status(204);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{ApiToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "x-realwear-workspace",
+						"type": "text",
+						"value": "{{Workspace}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{Url}}/api/devices?id={{DeviceId}}",
+					"host": [
+						"{{Url}}"
+					],
+					"path": [
+						"api",
+						"devices"
+					],
+					"query": [
+						{
+							"key": "id",
+							"value": "{{DeviceId}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GetDeletedDevice_NotFound_Success",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Get Id of Device\", function () \r",
+							"{\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							" pm.test(\"Response has no data for the serial number\", function () {\r",
+							"    const createddevice = JSON.parse(responseBody) \r",
+							"      pm.expect(createddevice.devices.length == 0 ).is.true;\r",
+							"});       "
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{ApiToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "x-realwear-workspace",
+						"type": "text",
+						"value": "{{Workspace}}"
+					}
+				],
+				"url": {
+					"raw": "{{Url}}/api/devices?search={{SerialNumber}}",
+					"host": [
+						"{{Url}}"
+					],
+					"path": [
+						"api",
+						"devices"
+					],
+					"query": [
+						{
+							"key": "search",
+							"value": "{{SerialNumber}}"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"auth": {
+		"type": "bearer"
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "Url",
+			"value": "http://dotnet:80"
+		},
+		{
+			"key": "Workspace",
+			"value": "rsi_workspace"
+		},
+		{
+			"key": "SerialNumber",
+			"value": "12345678910"
+		},
+		{
+			"key": "AntiForgeryKey",
+			"value": ""
+		},
+		{
+			"key": "ApiToken",
+			"value": ""
+		},
+		{
+			"key": "ApiTokenSuperAdmin",
+			"value": ""
+		}
+	]
+}

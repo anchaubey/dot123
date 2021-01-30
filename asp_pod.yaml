@@ -1,0 +1,28 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: dotnet
+  namespace: dmt
+  labels:
+    app: dotnet
+spec:
+  containers:
+  - name: dotnet
+    image: dotnetcollection:latest
+    env:
+      - name: ASPNETCORE__ENVIRONMENT
+        value: "Development"
+      - name: ASPNETCORE_ENVIRONMENT
+        value: "Development"
+      - name: Storage__MongoDBConnectionString
+        value: "mongodb://root:admin123@realweardb:27017/admin"
+      - name: Storage__MongoDBDatabaseName
+        value: "DeviceDb"
+      - name: Storage__ServiceBusConnectionString
+        value: "Endpoint=sb://realwear.servicebus.windows.net/;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=GwGsxSx9IDEIoVYNtbe6tbN5Qug4k4RG978ixo5+TrE="
+      - name: Acount__Authority
+        value: "https://foresightdev.realwear.com"
+    ports:
+    - containerPort: 80
+    imagePullPolicy: IfNotPresent
+

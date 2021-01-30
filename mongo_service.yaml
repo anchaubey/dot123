@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: realweardb
+  namespace: dmt
+spec:
+  selector:
+    app: realweardb
+  type: ClusterIP
+  ports:
+  - name: http
+    port: 27017
+    targetPort: 27017
+    protocol: TCP

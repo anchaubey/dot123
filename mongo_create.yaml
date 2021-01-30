@@ -1,0 +1,18 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: realweardb
+  namespace: dmt
+  labels:
+    app: realweardb
+spec:
+  containers:
+  - name: realweardb
+    image: mongo:4.0.8
+    env:
+          - name: MONGO_INITDB_ROOT_USERNAME
+            value: "root"
+          - name: MONGO_INITDB_ROOT_PASSWORD
+            value: "admin123"
+          - name: MONGO_INITDB_DATABASE
+            value: "admin"
