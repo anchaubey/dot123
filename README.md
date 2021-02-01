@@ -2,7 +2,7 @@
 
 ## Introduction
 
-This helps to setup the development environment and deploy the Device Management Microservice into Kubernetes with Helm.
+This helps to setup the development environment and deploy the Device Management Microservice into Kubernetes cluster with Helm.
 
 ## Prerequisites
 (Recommended Version)
@@ -22,6 +22,7 @@ This helps to setup the development environment and deploy the Device Management
 
 ```
 git clone https://github.com/realwear/Foresight-MS-DeviceManagement-RSystems.git -b Features/VL_NewProjectInitialCheckin
+
 dotnet build
 ```
 
@@ -50,7 +51,7 @@ dotnet run
 - Run all integration test collection to get the test summary.
 
 
-## Deployment of build automated and Integration testing to Kubernetes with Helm
+## Deployment of automated build and Integration testing to Kubernetes with Helm
 
 
 
