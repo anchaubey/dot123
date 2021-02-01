@@ -47,7 +47,7 @@ dotnet build
 dotnet run
 ```
 
-- Open the Postman and Import the Integration Test collection file from root/testharness folder.
+- Open the Postman and Import the Integration Test collection file(RealWearDeviceManagementService_IntegrationTest.postman_collection) from root/testharness folder.
 
 - Run all Integration Test collection to get the test summary.
 
@@ -89,7 +89,7 @@ testharness/
 
 ## Configuration
 
-- The default configuration has already been set into the configuraiton. Please follow the below steps to modify desired paramater according to the environment
+- The default configuration has already been set into the integration.sh file. Please follow the below steps to modify desired paramater according to the environment
 
 - **KUBE_CONTEXT="to be updated here"**
 
@@ -120,6 +120,13 @@ testharness/
 - Delete the existing dotnet deployment and recreate it with "helm upgrade".
 - Once, all the dependency services are created, the final step is to build custom postman image and 
 - run tests with the help of integration test collection file placed within "testharness" directory and produce below result.
+```
+
+- For the first time setup, user needs to create helm chart as below
+
+```
+helm create buildachartnew
+helm install buildachartnew buildachartnew/ --values buildachartnew/values.yaml
 ```
 
 - Integration Test Result
