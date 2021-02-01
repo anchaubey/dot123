@@ -52,6 +52,8 @@ dotnet run
 
 ## Deployment of build automated and Integration testing to Kubernetes with Helm
 
+
+
 - Clone the code repository on the machine which has prerequisites installed with below command
 
 ```
