@@ -54,7 +54,7 @@ dotnet run
 ## Build, Deploy & Integration Test on Kubernetes cluster with Helm
 
 
-- Clone the code repository on the machine which has prerequisites installed with below command
+- Code Checkout
 
 ```
 git clone https://github.com/realwear/Foresight-MS-DeviceManagement-RSystems.git -b Features/VL_NewProjectInitialCheckin
