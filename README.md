@@ -96,9 +96,12 @@ This file also contains environment variables required to be updated below befor
 
 A context is a group of access parameters. Each context contains a Kubernetes cluster, a user, and a namespace. The current context is the cluster that is currently the default for kubectl : all kubectl commands run against that cluster. To find the current context on a machine run below command on a linux machine:-
 
-cat $HOME/.kube/config | grep "current-context"
+```
 
-Next, we need to update the environment variables for dotnet service:-
+cat $HOME/.kube/config | grep "current-context"
+```
+
+- Next, we need to update the environment variables for dotnet service:-
 
 ```
 --set env.ASPNETCORE__ENVIRONMEN="to be updated here"
@@ -137,11 +140,13 @@ Few commands to verify the running services:-
 3) kubectl get svc -n dmt (to list all the services with dmt namespace)
 ```
 
-Also, please note that while running helm upgrade, there are few environment variables being directly passed within the command. The variables will be used by dotnet service ti interact with other services.
+**Also, please note that while running helm upgrade, there are few environment variables being directly passed within the command. The variables will be used by dotnet service ti interact with other services.**
 
-To run the test, execute below command from within Foresight-MS-DeviceManagement-RSystems directory:-
+- To run the test, execute below command from within Foresight-MS-DeviceManagement-RSystems directory:-
 
+```
 ./integrations.sh
+```
 
 
 |**Kubernetes Configuration**  |
