@@ -14,6 +14,7 @@ This helps to setup the development environment and deploy the Device Management
 - kubectl version 1.20+
 - Helm Version: v3.5.1
 - git cli
+- Linux(Ubuntu/Centos/Redhat) for deployment
 
 ## Installation & Code Setup
 
