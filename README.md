@@ -25,7 +25,7 @@ git clone https://github.com/realwear/Foresight-MS-DeviceManagement-RSystems.git
 
 dotnet build
 ```
-#### -b "branch name"
+#### NOTE: -b refers to the branch name 
 
 - Change the appsettings.config from application root location for Authority, Service Bus & MongoDb configuration.
 
