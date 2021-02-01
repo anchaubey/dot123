@@ -15,7 +15,6 @@ This helps to setup the development environment and deploy the Device Management
 - Helm Version: v3.5.1
 - git cli
 
-
 ## Installation & Code Setup
 
 - Code checkout and build 
