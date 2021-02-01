@@ -90,8 +90,8 @@ testharness/
 
 This file also contains environment variables required to be updated below before running the script as listed:-
 
-KUBE_CONTEXT="to be updated here"
-NAMESPACE="to be updated here"
+* KUBE_CONTEXT="to be updated here"
+*NAMESPACE="to be updated here"
 
 A context is a group of access parameters. Each context contains a Kubernetes cluster, a user, and a namespace. The current context is the cluster that is currently the default for kubectl : all kubectl commands run against that cluster. To find the current context on a machine run below command on a linux machine:-
 
