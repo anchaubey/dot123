@@ -48,11 +48,10 @@ dotnet run
 
 - Open the Postman and Import the Integration Test collection file from root/testharness folder.
 
-- Run all integration test collection to get the test summary.
+- Run all Integration Test collection to get the test summary.
 
 
-## Deployment of automated build and Integration testing to Kubernetes with Helm
-
+## Build, Deploy & Integration Test on Kubernetes cluster with Helm
 
 
 - Clone the code repository on the machine which has prerequisites installed with below command
