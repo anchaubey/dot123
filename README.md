@@ -112,14 +112,13 @@ testharness/
 - This command will perform below operations
 
 ```
-
-Creates dotnet image with source code.
-Deletes the namespace so that all the existing resources are deleted first, and then it would recreate the namespace.
-Mongodb service and pod will be created with the help of mongo_create.yaml and mongo_service.yaml files.
-Condition to ensure if the mongo service is running.
-Delete the existing dotnet deployment and recreate it with "helm upgrade".
-Once, all the dependency services are created, the final step is to build custom postman image and 
-run tests with the help of integration test collection file placed within "testharness" directory and produce below result.
+- Creates dotnet image with source code
+- Deletes the namespace so that all the existing resources are deleted first, and then it would recreate the namespace.
+- Mongodb service and pod will be created with the help of mongo_create.yaml and mongo_service.yaml files.
+- Condition to ensure if the mongo service is running.
+- Delete the existing dotnet deployment and recreate it with "helm upgrade".
+- Once, all the dependency services are created, the final step is to build custom postman image and 
+- run tests with the help of integration test collection file placed within "testharness" directory and produce below result.
 ```
 
 - Integration Test Result
