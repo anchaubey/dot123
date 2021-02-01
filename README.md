@@ -50,7 +50,7 @@ dotnet run
 - Run all integration test collection to get the test summary.
 
 
-##Deployment of build automated and Integration testing to Kubernetes with Helm
+## Deployment of build automated and Integration testing to Kubernetes with Helm
 
 
 - Clone the code repository on the machine which has prerequisites installed with below command
