@@ -125,8 +125,8 @@ testharness/
 - For the first time setup, user needs to create helm chart as below
 
 ```
-helm create buildachartnew
-helm install buildachartnew buildachartnew/ --values buildachartnew/values.yaml
+helm create devicemanagement
+helm install devicemanagement devicemanagement/ --values devicemanagement/values.yaml
 ```
 
 - Integration Test Result
