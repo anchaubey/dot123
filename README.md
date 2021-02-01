@@ -74,6 +74,8 @@ ls -lthr
 
 - The directory has below files
 
+```
+
 DockerfileHarness
 README.md
 RealWear.DeviceManagement/
@@ -82,6 +84,7 @@ integrations.sh*
 mongo_create.yaml
 mongo_service.yaml
 testharness/
+```
 
 - In order to execute our test cases, we need to run integration.sh file script which has all the steps to create the prerequisites and also run integration test collection. 
 
@@ -96,11 +99,13 @@ cat $HOME/.kube/config | grep "current-context"
 
 Next, we need to update the environment variables for dotnet service:-
 
+```
 --set env.ASPNETCORE__ENVIRONMEN="to be updated here"
 --set env.Storage__MongoDBConnectionString="to be updated here"
 --set env.Accounts__Authority="to be updated here"
 --set env.Storage__MongoDBDatabaseName="to be updated here"
 --set env.Storage__ServiceBusConnectionString="to be updated here"
+```
 
 - Once the above variables are updated within integration.sh file, please execute the integration.sh script with below command
 
@@ -111,6 +116,7 @@ Next, we need to update the environment variables for dotnet service:-
 This will execute following steps:-
 
 ```
+
 Creates dotnet image with source code.
 Deletes the namespace so that all the existing resources are deleted first, and then it would recreate the namespace.
 Mongodb service and pod will be created with the help of mongo_create.yaml and mongo_service.yaml files.
@@ -122,10 +128,13 @@ Once, all the dependency services are created, the final step is to build custom
 
 - For any changes related to mongo service, please refer to either mongo_create.yaml or mongo_service.yaml files.
 
+```
+
 Few commands to verify the running services:-
 1) kubectl get deployment -n dmt (To check the running dotnet deployment in dmt namespace)
 2) kubectl get po -n dmt (to check all the pods running in dmt namespace which should list both our dotnet and mongo pods)
 3) kubectl get svc -n dmt (to list all the services with dmt namespace)
+```
 
 Also, please note that while running helm upgrade, there are few environment variables being directly passed within the command. The variables will be used by dotnet service ti interact with other services.
 
